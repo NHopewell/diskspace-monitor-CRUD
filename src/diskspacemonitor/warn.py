@@ -5,10 +5,7 @@ warnings to be registered in our system. These warnings do not
 disrupt the system, but rather are storaged in memory to be queried
 and logged.
 """
-import typing as t
 from enum import Enum
-from unicodedata import category
-import warnings
 
 
 class WarningEnum(str, Enum):
