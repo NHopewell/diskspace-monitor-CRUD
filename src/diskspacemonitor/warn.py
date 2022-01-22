@@ -16,17 +16,6 @@ class WarningEnum(str, Enum):
     over_memory_limit = "over memory limit"
 
 
-def warn_close_to_memory_limit(
-    agent_name: str, current_storage_useage: int, total_storage: int
-) -> None:
-    warnings.simplefilter("always")
-    msg = f"""{agent_name} is approaching its storage limit. 
-        Current storage useage: {current_storage_useage}. 
-        Total storage usage: {total_storage}"""
-
-    warnings.warn(msg)
-
-
 class OverMemoryLimitError(Exception):
     """Error that is raised when an Agents current storage useage reported
     exceeds its set storage limit.
