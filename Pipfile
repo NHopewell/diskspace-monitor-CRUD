@@ -6,11 +6,13 @@ name = "pypi"
 [packages]
 pydantic = "*"
 fastapi = "*"
+diskspacemonitor = {editable = true, path = "."}
 
 [dev-packages]
 pytest = "*"
 pre-commit = "*"
 flake8 = "*"
+black = "*"
 
 [requires]
 python_version = "3.8"
