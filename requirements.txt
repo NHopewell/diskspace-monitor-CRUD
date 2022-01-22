@@ -6,6 +6,7 @@
 #
 
 -i https://pypi.org/simple
+-e .
 anyio==3.5.0; python_full_version >= '3.6.2'
 fastapi==0.72.0
 idna==3.3; python_version >= '3.5'
