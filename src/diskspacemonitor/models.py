@@ -10,22 +10,22 @@ import diskspacemonitor.settings as settings
 warnings.simplefilter("always")
 
 
-class Agent(pydantic.BaseModel):
+class SystemComponent(pydantic.BaseModel):
     """
-    An agent represents a component of the build system we would like to
-    monitor.
+    a SystemComponent represents a component of the build system we would 
+    like to monitor.
 
     note: data validation has been captured in the data model here by
     sending custom errors to the API, signaling when to register
-    AgentWarnings.
+    ResourceWarnings.
 
     attributes
     ----------
     name : str
-        a name given to the current resource / agent. Must be unique
+        a name given to the current resource / component. Must be unique
         to the current agent.
     total_available_storage : int
-        the total storage available on the agents system (in Gigabits).
+        the total storage available on the system component (in Gigabits).
     storage_limit: optional int
         the upper limit on current storage useage (as a percentage of 100),
         above which a warning will be issued.
@@ -93,13 +93,13 @@ class Agent(pydantic.BaseModel):
                 f"Total storage usage: {storage_limit_in_gigabits}G."
             )
 
-            warnings.warn(msg, category=ResourceWarning)
+            warnings.warn(msg)
 
         self.current_storage_useage = value
 
 
-class AgentHistoricData(pydantic.BaseModel):
-    """An AgentHistoridData is a data point of a given Agents storage
+class ComponentEvent(pydantic.BaseModel):
+    """A omponentEvent is a data point of a given SystemComponent storage
     useage one moment in time.
 
     note: These are automatically generated when new Agents are registered
@@ -113,10 +113,10 @@ class AgentHistoricData(pydantic.BaseModel):
     proportion_of_capacity_at_timestamp: float
 
 
-class AgentWarning(pydantic.BaseModel):
-    """An Agent warning is a warning registered when an Agent reports
-    a storage useage above, or close to, its upper limit.
+class ResourceWarning(pydantic.BaseModel):
+    """A ResourceWarning is a warning registered when a SystemComponent
+    reports a storage useage above, or close to, its upper limit.
     """
 
     warning_type: WarningEnum
-    agent: AgentHistoricData  # nested model including the timestamp
+    component_event: ComponentEvent # nested model including the timestamp
