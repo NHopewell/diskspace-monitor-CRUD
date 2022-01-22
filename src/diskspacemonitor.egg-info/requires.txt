@@ -1,5 +1,0 @@
-fastapi>0.7
-pydantic>1
-
-[testing]
-flake8>=3.8
