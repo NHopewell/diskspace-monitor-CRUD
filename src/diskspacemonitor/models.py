@@ -1,4 +1,3 @@
-from unicodedata import category
 import pydantic
 import typing as t
 import datetime
@@ -13,7 +12,8 @@ warnings.simplefilter("always")
 
 class Agent(pydantic.BaseModel):
     """
-    An agent is component of the build system we would like to monitor.
+    An agent represents a component of the build system we would like to
+    monitor.
 
     note: data validation has been captured in the data model here by
     sending custom errors to the API, signaling when to register
@@ -26,10 +26,13 @@ class Agent(pydantic.BaseModel):
         to the current agent.
     total_available_storage : int
         the total storage available on the agents system (in Gigabits).
-    storage_limit: optional float
+    storage_limit: optional int
         the upper limit on current storage useage (as a percentage of 100),
         above which a warning will be issued.
         Defaults to 100. Must be between 0 - 100.
+    current_storage_useage: optional int
+        the amount of storage the agent is currently using.
+        Defaults to 0. Must be between 0 - total_available_storage.
     """
 
     name: str
@@ -58,18 +61,14 @@ class Agent(pydantic.BaseModel):
 
         return free_storage
 
-    @pydantic.validator("storage_limit")
-    @classmethod
-    def storage_limit_valid(cls, value: int) -> int:
-        """Validate that the storage limit set is between 0 - 100."""
-
+    def set_storage_limit(self, value: int) -> None:
         if value not in range(0, 101):
             # if the storage limit set is out of range, signal to the
             # API to respond with a failure code, do not register AgentWarning
             msg = "The storage limit must be between 0 - 100."
             raise warn.StorageLimitOutOfRangeError(value=value, message=msg)
 
-        return value
+        self.storage_limit = value
 
     def set_current_storage_useage(self, value: int) -> None:
         """Validate that the current storage usage is under the
