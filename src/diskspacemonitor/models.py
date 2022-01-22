@@ -55,9 +55,7 @@ class Agent(pydantic.BaseModel):
     @property
     def free_storage(self) -> float:
         """Returns currently unused storage in Gigabits"""
-        free_storage = (
-            self.total_available_storage - self.current_storage_useage
-        )
+        free_storage = self.total_available_storage - self.current_storage_useage
 
         return free_storage
 
@@ -85,8 +83,7 @@ class Agent(pydantic.BaseModel):
             msg = "The current storage useage exceeds the total storage limit."
             raise warn.OverMemoryLimitError(value=value, message=msg)
         elif (
-            storage_limit_in_gigabits - value
-            <= settings.CLOSE_TO_STORAGE_LIMIT_TRIGGER
+            storage_limit_in_gigabits - value <= settings.CLOSE_TO_STORAGE_LIMIT_TRIGGER
         ):
             # if the current storage approached the storage limit, signal to
             # the API to register an AgentWarning
