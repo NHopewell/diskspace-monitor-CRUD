@@ -84,11 +84,11 @@ and the storage limits and useages change.</p>
 <td width="60%"> 
 <strong>endpoints</strong>
 
-|     |                                  |                                                       |
-| --- | -------------------------------- | ----------------------------------------------------- |
-| GET | /v1/component_events/:id         | Retrieve latestest reported useage for a component    |
-| GET | /v1/component_events/:id/history | Retrieve historic reported useages for a component    |
-| GET | /v1/component_components         | Retrieve latestest reported useage for all components |
+|     |                                  |                                         |
+| --- | -------------------------------- | --------------------------------------- |
+| GET | /v1/component_events/:id         | Get latestest useage for component      |
+| GET | /v1/component_events/:id/history | Get historic useages for component      |
+| GET | /v1/component_components         | Get latestest useage for all components |
 
 </td>
 </tr>
@@ -111,7 +111,7 @@ and the storage limits and useages change.</p>
   "id": "eve_AJ6yY15pe9xOZe",
   "object": "component_event",
   "timestamp": 1642887447,
-    "system_component": {
+  "system_component": {
         "id": "comp_1032HU2eZvKYlo2CEPtcnUvl",
         "name": "CrashDumpStore",
         "total_available_storage": 400,
