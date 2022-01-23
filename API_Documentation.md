@@ -6,7 +6,7 @@ The Diskspace Monitor API is a RESTful API which is build around **3 CORE RESOUR
 
 <table border="0">
 <tr>
-<td width="30%">   
+<td width="40%">   
 <p> An SystemComponent represents a component of the build system we would like to
 monitor. A SystemComponent is created on the monitoring system (with a name and
 available storage) any time an agent registered a new component in the system.</p>
@@ -15,7 +15,7 @@ available storage) any time an agent registered a new component in the system.</
 
 </td>
 
-<td width="70%"> 
+<td width="60%"> 
 <strong>endpoints</strong>
 
 |        |                           |                           |
@@ -28,13 +28,13 @@ available storage) any time an agent registered a new component in the system.</
 
 </td>
 </tr>
-</table
+</table>
 
 **The System Component Object**:
 
 <table border="0">
 <tr>
-<td width="30%" vertical-align="top">  
+<td width="40%" vertical-align="top">  
 <p><strong>id</strong>: unique identifier for the object.</p>
 
 <p><strong>name</strong>: unique name for the system component.</p>
@@ -47,7 +47,7 @@ available storage) any time an agent registered a new component in the system.</
 
 </td>
 
-<td width="70%">
+<td width="60%">
 
 ```json
 {
@@ -62,7 +62,7 @@ available storage) any time an agent registered a new component in the system.</
 
 </td>
 </tr>
-</table
+</table>
 
 <br />
 
@@ -74,14 +74,14 @@ available storage) any time an agent registered a new component in the system.</
 
 <table border="0">
 <tr>
-<td width="30%">   
+<td width="40%">   
 <p>A ComponentEvent is a data point of a given SystemComponents storage
 useage one moment in time. These are automatically generated when new components are registered
 and the storage limits and useages change.</p>
 
 </td>
 
-<td width="70%"> 
+<td width="60%"> 
 <strong>endpoints</strong>
 
 |     |                                  |                                                       |
@@ -92,29 +92,26 @@ and the storage limits and useages change.</p>
 
 </td>
 </tr>
-</table
+</table>
 
 **Component Event Object**:
 
 <table border="0">
 <tr>
-<td width="30%" vertical-align="top">  
-<p><strong>id</strong>: unique identifier for the object.</p>
+    <td width="40%">   
+        <p><strong>id</strong>: unique identifier for the object.</p>
+        <p><strong>timestamp</strong>: the date and time at which the event was captured.</p>
+        <p><strong>system_component</strong>: a nested SystemComponent object including all details about the compnent at the timestamp.</p>
+    </td>
 
-<p><strong>timestamp</strong>: the date and time at which the event was captured.</p>
-
-<p><strong>system_component</strong>: a nested SystemComponent object.</p>
-
-</td>
-
-<td width="70%">
+<td width="60%">
 
 ```json
 {
   "id": "eve_AJ6yY15pe9xOZe",
   "object": "component_event",
   "timestamp": 1642887447,
-  "system_component": {
+    "system_component": {
         "id": "comp_1032HU2eZvKYlo2CEPtcnUvl",
         "name": "CrashDumpStore",
         "total_available_storage": 400,
@@ -125,8 +122,9 @@ and the storage limits and useages change.</p>
 ```
 
 </td>
+
 </tr>
-</table
+</table>
 
 <br />
 
@@ -138,13 +136,13 @@ and the storage limits and useages change.</p>
 
 <table border="0">
 <tr>
-<td width="30%">   
+<td width="40%">   
 <p>A ResourceWarning is a warning registered when a SystemComponent
     reports a storage useage above, or close to, its upper limit.</p>
 
 </td>
 
-<td width="70%"> 
+<td width="60%"> 
 <strong>endpoints</strong>
 
 |     |                       |                            |
@@ -153,13 +151,13 @@ and the storage limits and useages change.</p>
 
 </td>
 </tr>
-</table
+</table>
 
 **Resource Warning Object**:
 
 <table border="0">
 <tr>
-<td width="30%" vertical-align="top">  
+<td width="40%" vertical-align="top">  
 <p><strong>id</strong>: unique identifier for the object.</p>
 
 <p><strong>warning_type</strong>: the type of warning issued by the system (out of memory or close to memory limit).</p>
@@ -168,7 +166,7 @@ and the storage limits and useages change.</p>
 
 </td>
 
-<td width="70%">
+<td width="60%">
 
 ```json
 {
@@ -184,11 +182,11 @@ and the storage limits and useages change.</p>
             "total_available_storage": 400,
             "storage_limit": 90,
             "current_storage_useage": 395
-        }
+            }
     }
 }
 ```
 
 </td>
 </tr>
-</table
+</table>
