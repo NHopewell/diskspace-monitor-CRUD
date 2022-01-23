@@ -112,12 +112,12 @@ and the storage limits and useages change.</p>
   "object": "component_event",
   "timestamp": 1642887447,
   "system_component": {
-        "id": "comp_1032HU2eZvKYlo2CEPtcnUvl",
-        "name": "CrashDumpStore",
-        "total_available_storage": 400,
-        "storage_limit": 90,
-        "current_storage_useage": 100
-    }
+    "id": "comp_1032HU2eZvKYlo2CEPtcnUvl",
+    "name": "CrashDumpStore",
+    "total_available_storage": 400,
+    "storage_limit": 90,
+    "current_storage_useage": 100
+  }
 }
 ```
 
@@ -132,7 +132,7 @@ and the storage limits and useages change.</p>
 
 <br />
 
-### Resource Warnings
+## Resource Warnings
 
 <table border="0">
 <tr>
@@ -174,16 +174,16 @@ and the storage limits and useages change.</p>
   "object": "resource_warning",
   "warning_type": "over_memory_limit",
   "component_event": {
-        "id": "eve_AJ6yY15pe9xOZe",
-        "timestamp": 2342887447,
-        "system_component": {
-            "id": "comp_1032HU2eZvKYlo2CEPtcnUvl",
-            "name": "CrashDumpStore",
-            "total_available_storage": 400,
-            "storage_limit": 90,
-            "current_storage_useage": 395
-            }
+    "id": "eve_AJ6yY15pe9xOZe",
+    "timestamp": 2342887447,
+    "system_component": {
+      "id": "comp_1032HU2eZvKYlo2CEPtcnUvl",
+      "name": "CrashDumpStore",
+      "total_available_storage": 400,
+      "storage_limit": 90,
+      "current_storage_useage": 395
     }
+  }
 }
 ```
 
