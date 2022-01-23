@@ -99,18 +99,16 @@ class SystemComponent(pydantic.BaseModel):
 
 
 class ComponentEvent(pydantic.BaseModel):
-    """A omponentEvent is a data point of a given SystemComponent storage
+    """A ComponentEvent is a data point of a given SystemComponents storage
     useage one moment in time.
 
-    note: These are automatically generated when new Agents are registered
-    and and the storage limits and useages change.
+    note: These are automatically generated when new components are registered
+    and the storage limits and useages change.
     """
 
-    agent_name: str
     timestamp: datetime.datetime
-    storage_useage_at_timestamp: int
-    total_storage_at_timestamp: int
-    proportion_of_capacity_at_timestamp: float
+    system_component: SystemComponent
+
 
 
 class ResourceWarning(pydantic.BaseModel):
