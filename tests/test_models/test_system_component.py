@@ -22,7 +22,7 @@ def test_current_storage_useage_over_limit(crash_dump_50: SystemComponent) -> bo
 
 
 @pytest.mark.parametrize(
-    "test_input,expected", [(55, 55), (30, 30), (15, 15), (90, 90), (1, 1)]
+    "test_input,expected", [(55, 55), (30, 30), (15, 15), (80, 80), (1, 1)]
 )
 def test_current_storage_useage_change(
     test_input: int, expected: int, crash_dump_50: SystemComponent
@@ -35,7 +35,7 @@ def test_current_storage_useage_change(
 
 
 @pytest.mark.parametrize(
-    "test_input,expected", [(55, 45), (30, 70), (15, 85), (90, 10), (1, 99)]
+    "test_input,expected", [(55, 45), (30, 70), (15, 85), (80, 20), (1, 99)]
 )
 def test_free_storage_change(
     test_input: int, expected: int, crash_dump_50: SystemComponent
@@ -49,7 +49,7 @@ def test_free_storage_change(
 
 @pytest.mark.parametrize(
     "test_input,expected",
-    [(55, 55.0), (30, 30.0), (15, 15.0), (90, 90.0), (1, 1.0)],
+    [(55, 55.0), (30, 30.0), (15, 15.0), (80, 80.0), (1, 1.0)],
 )
 def test_proportion_of_storage_used_change(
     test_input: int,
