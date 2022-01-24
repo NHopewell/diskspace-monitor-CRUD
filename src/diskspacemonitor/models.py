@@ -32,7 +32,7 @@ class SystemComponent(pydantic.BaseModel):
     """
 
     name: str
-    total_available_storage: t.Optional[int] = None
+    total_available_storage: int
     storage_limit: int = 100
     current_storage_useage: int = 0
 
