@@ -1,0 +1,336 @@
+"""main.py
+
+This module contains the functions which are triggered at each endpoint
+of our API. We are using a simple in-memory database to store and retrieve
+data from which the application is running. These data are not persisted
+to disk.
+"""
+import typing as t
+from collections import defaultdict
+
+from fastapi import FastAPI
+
+import diskspacemonitor.api.utils as api_utils
+import diskspacemonitor.models as models
+import diskspacemonitor.warn as monitor_warnings
+
+
+app = FastAPI()
+
+### DATABASE ###
+in_memory_db = {
+    "system_components": {},
+    "system_events": defaultdict(list),
+    "resource_warnings": defaultdict(list),
+}
+
+
+########################################################################
+#                                                                      #
+#                     System Component Endpoints                       #
+#                     --------------------------                       #
+#                                                                      #
+#    POST	 /v1/system_components	      Create System Component      #
+#    GET	 /v1/system_components/:name  Retrieve System Component    #
+#    PATCH	 /v1/system_components/:name  Update System Component      #
+#    DELETE	 /v1/system_components/:name  Delete System Component      #
+#    GET	 /v1/system_components	      List System Components       #
+#                                                                      #
+########################################################################
+
+
+@app.post("/v1/system_components")
+def create_system_component(component: models.SystemComponent) -> None:
+    """Create a new system component in our monitored system."""
+
+    if component.name in in_memory_db["system_components"]:
+        response = {
+            "Error": f"{component.name} already exists in the monitored system."
+        }
+        return response
+
+    api_utils.register_system_component(component, in_memory_db)
+    api_utils.register_system_event(component.name, component, in_memory_db)
+
+
+@app.get("/v1/system_components/{component_name}")
+def read_system_component(component_name: str) -> t.Dict[str, str]:
+    """Retrieve data regarding a single system component of our monitored system.
+
+    Path Parameters
+    ---------------
+    component_name: str
+        the unique name of a system component.
+    """
+    if component_name not in in_memory_db["system_components"]:
+        response = {
+            "Error": f"{component_name} does not exist in the monitored system."
+        }
+        return response
+
+    return api_utils.get_system_component(component_name, in_memory_db)
+
+
+@app.patch("/v1/system_components/{component_name}")
+def update_system_component(
+    component_name: str, updated_component: models.UpdateSystemComponent
+) -> None:
+    """Update system component in our monitored system.
+
+    Path Parameters
+    ---------------
+    component_name: str
+        the unique name of a system component.
+
+    """
+    if component_name not in in_memory_db["system_components"]:
+        response = {
+            "Error": f"{component_name} does not exist in the monitored system."
+        }
+        return response
+
+    system_component = in_memory_db["system_components"][component_name]
+
+    #### update component total storage if in request ###
+    if new_total := updated_component.total_available_storage:
+        system_component.total_available_storage = new_total
+
+    #### update component storage limit if in request ###
+    if new_storage_limit := updated_component.storage_limit:
+        try:
+            system_component.set_storage_limit(new_storage_limit)
+        except monitor_warnings.StorageLimitOutOfRangeError:
+            response = {
+                "Error": f"{new_storage_limit} is not a valid storage limit. Must be between 0 - 100"
+            }
+            return response
+
+    #### update component storage useage if in request ###
+    warning_flag, warning_type = False, None
+
+    if new_current_useage := updated_component.current_storage_useage:
+        try:
+            system_component.set_current_storage_useage(new_current_useage)
+
+        except monitor_warnings.OverMemoryLimitError:
+            warning_flag, warning_type = (
+                True,
+                monitor_warnings.WarningEnum.over_memory_limit,
+            )
+
+        except monitor_warnings.CloseToMemoryLimitError:
+            warning_flag, warning_type = (
+                True,
+                monitor_warnings.WarningEnum.close_to_memory_limit,
+            )
+
+    if warning_flag:
+        # register new system event along with a resource warning
+        api_utils.register_system_event(
+            component_name, system_component, in_memory_db, warning_type
+        )
+    else:
+        # register new system event only
+        api_utils.register_system_event(component_name, system_component, in_memory_db)
+
+
+@app.delete("/v1/system_components/{component_name}")
+def delete_system_component(component_name: str) -> None:
+    """Remove a system component from our monitored system.
+
+    Path Parameters
+    ---------------
+    component_name: str
+        the unique name of a system component.
+    """
+    if component_name not in in_memory_db["system_components"]:
+        response = {
+            "Error": f"{component_name} does not exist in the monitored system."
+        }
+        return response
+
+    del in_memory_db["system_components"][component_name]
+
+
+@app.get("/v1/system_components")
+def list_system_components(
+    skip: int = 0, limit: t.Optional[int] = 100
+) -> t.List[t.Dict[str, str]]:
+    """List all currently monitored components of our system.
+
+    Query Parameters
+    ----------------
+    skip: int
+        The number of system components in our result set to skip.
+    limit: int
+        The total number of system components to return.
+    """
+    all_system_components = list(in_memory_db["system_components"].values())
+    filtered = all_system_components[skip : skip + limit]
+
+    return filtered
+
+
+########################################################################################
+#                                                                                      #
+#                           Component Events Endpoints                                 #
+#                           --------------------------                                 #
+#                                                                                      #
+#  GET	 /v1/component_events/:name	          Get latestest useage for component       #
+#  GET	 /v1/component_events/:name/history   Get historic useages for component       #
+#  GET	 /v1/component_components             Get latestest useage for all components  #
+#                                                                                      #
+########################################################################################
+
+
+@app.get("/v1/component_events/{component_name}")
+def get_latest_useage(component_name: str) -> t.Dict[str, str]:
+    """
+    Retrieve the latest storage useage of a component in the system.
+
+    Path Parameters
+    ---------------
+    component_name: str
+        the unique name of a system component.
+    """
+    all_component_events = in_memory_db["system_events"][component_name]
+    latest_event = all_component_events[len(all_component_events) - 1]
+
+    latest_event_response = api_utils.return_event_dict(
+        latest_event.event_id,
+        latest_event.timestamp,
+        latest_event.component_name,
+        latest_event.total_available_storage,
+        latest_event.storage_limit,
+        latest_event.current_storage_useage,
+    )
+
+    return latest_event_response
+
+
+@app.get("/v1/component_events/{component_name}/history")
+def get_useage_history(
+    component_name: str, skip: int = 0, limit: t.Optional[int] = 100
+) -> t.List[t.Dict[str, str]]:
+    """
+    List complete storage useage history for a component in the system.
+
+    Path Parameters
+    ---------------
+    component_name: str
+        the unique name of a system component.
+
+    Query Parameters
+    ----------------
+    skip: int
+        The number of component events in our result set to skip.
+    limit: int
+        The total number of component events to return.
+    """
+    all_component_events = in_memory_db["system_events"][component_name]
+    event_history_response = [
+        api_utils.return_event_dict(
+            event.event_id,
+            event.timestamp,
+            event.component_name,
+            event.total_available_storage,
+            event.storage_limit,
+            event.current_storage_useage,
+        )
+        for event in all_component_events
+    ]
+
+    filtered = event_history_response[skip : skip + limit]
+
+    return filtered
+
+
+@app.get("/v1/component_events/")
+def get_all_latest_useages(
+    skip: int = 0, limit: t.Optional[int] = 100
+) -> t.List[t.Dict[str, str]]:
+    """List the latest storage useage of all component in the system.
+
+    Query Parameters
+    ----------------
+    skip: int
+        The number of component events in our result set to skip.
+    limit: int
+        The total number of component events to return.
+    """
+
+    all_components = in_memory_db["system_events"].keys()
+
+    latest_events = []
+    for component in all_components:
+        all_component_events = in_memory_db["system_events"][component]
+        latest_events.append(all_component_events[len(all_component_events) - 1])
+
+    latest_events_for_each_component_response = [
+        api_utils.return_event_dict(
+            event.event_id,
+            event.timestamp,
+            event.component_name,
+            event.total_available_storage,
+            event.storage_limit,
+            event.current_storage_useage,
+        )
+        for event in latest_events
+    ]
+
+    return latest_events_for_each_component_response
+
+
+########################################################################
+#                                                                      #
+#                    Resource Warnings Endpoints                       #
+#                    ---------------------------                       #
+#                                                                      #
+#      GET   /v1/resource_warnings	  List all resource warnings       #
+########################################################################
+
+
+@app.get("/v1/resource_warnings")
+def list_resource_warnings(
+    skip: int = 0, limit: t.Optional[int] = 100
+) -> t.List[t.Dict[str, str]]:
+    """List all current resource warnings in our s.
+
+    Query Parameters
+    ----------------
+    skip: int
+        The number of system components in our result set to skip.
+    limit: int
+        The total number of system components to return.
+    """
+    # extract all resource warnings from the db
+    all_system_components = in_memory_db["system_events"].keys()
+    all_resource_warning_objects = []
+    for component in all_system_components:
+        for warning_object in in_memory_db["resource_warnings"][component]:
+            all_resource_warning_objects.append(warning_object)
+
+    # pair each resource warning to its component system event based on ids
+    all_resource_warnings = []
+    for resource_warning in all_resource_warning_objects:
+        warning_event_component_id = resource_warning.component_event_id
+        for component in all_system_components:
+            events_for_component = in_memory_db["system_events"][component]
+            for event in events_for_component:
+                if warning_event_component_id == event.event_id:
+                    all_resource_warnings.append(
+                        api_utils.return_warning_dict(
+                            resource_warning.warning_id,
+                            resource_warning.warning_type,
+                            resource_warning.component_event_id,
+                            event.timestamp,
+                            event.component_name,
+                            event.total_available_storage,
+                            event.storage_limit,
+                            event.current_storage_useage,
+                        )
+                    )
+
+    filtered = all_resource_warnings[skip : skip + limit]
+
+    return filtered
