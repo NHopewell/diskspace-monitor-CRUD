@@ -149,6 +149,7 @@ def delete_system_component(component_name: str) -> None:
         }
         return response
 
+    # not deleting the component from events or warnings to have backlog
     del in_memory_db["system_components"][component_name]
 
 
