@@ -171,11 +171,11 @@ in the system and when storage limits and useages change.</p>
         "event_id": "8ac60ebf-eb1d-4277-b293-accccc8b252f",
         "timestamp": "01.23.2022 23:41:11",
         "component_snapshot": {
-          "name": "CrashDumpStore",
-          "total_available_storage": 400,
-          "storage_limit": 90,
-          "current_storage_useage": 395
-        }
+            "name": "CrashDumpStore",
+            "total_available_storage": 400,
+            "storage_limit": 90,
+            "current_storage_useage": 395
+          }
     }
 }
 ```
