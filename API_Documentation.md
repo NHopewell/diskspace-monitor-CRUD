@@ -1,4 +1,4 @@
-# DISKSPACE MONITOR API
+# Diskspace Monitor API
 
 The Diskspace Monitor API is a RESTful API which is build around **3 CORE RESOURCES**.
 
@@ -51,8 +51,6 @@ available storage) any time an agent registered a new component in the system.</
 
 ```json
 {
-  "id": 1,
-  "object": "system_component",
   "name": "CrashDumpStore",
   "total_available_storage": 400,
   "storage_limit": 90,
