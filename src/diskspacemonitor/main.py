@@ -2,7 +2,7 @@
 
 This module contains the functions which are triggered at each endpoint
 of our API. We are using a simple in-memory database to store and retrieve
-data from which the application is running. These data are not persisted
+data when the application is running. These data are not persisted
 to disk.
 """
 import typing as t
@@ -279,7 +279,9 @@ def get_all_latest_useages(
         for event in latest_events
     ]
 
-    return latest_events_for_each_component_response
+    filtered = latest_events_for_each_component_response[skip : skip + limit]
+
+    return filtered
 
 
 #######################################################################
