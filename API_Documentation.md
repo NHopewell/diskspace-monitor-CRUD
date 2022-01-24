@@ -18,13 +18,13 @@ available storage) any time an agent registered a new component in the system.</
 <td width="60%"> 
 <strong>endpoints</strong>
 
-|        |                           |                           |
-| ------ | ------------------------- | ------------------------- |
-| POST   | /v1/system_components     | Create System Component   |
-| GET    | /v1/system_components/:id | Retrieve System Component |
-| POST   | /v1/system_components/:id | Update System Component   |
-| DELETE | /v1/system_components/:id | Delete System Component   |
-| GET    | /v1/system_components     | List System Components    |
+|        |                             |                           |
+| ------ | --------------------------- | ------------------------- |
+| POST   | /v1/system_components       | Create System Component   |
+| GET    | /v1/system_components/:name | Retrieve System Component |
+| PATCH  | /v1/system_components/:name | Update System Component   |
+| DELETE | /v1/system_components/:name | Delete System Component   |
+| GET    | /v1/system_components       | List System Components    |
 
 </td>
 </tr>
@@ -51,7 +51,7 @@ available storage) any time an agent registered a new component in the system.</
 
 ```json
 {
-  "id": "comp_1032HU2eZvKYlo2CEPtcnUvl",
+  "id": 1,
   "object": "system_component",
   "name": "CrashDumpStore",
   "total_available_storage": 400,
@@ -84,11 +84,11 @@ and the storage limits and useages change.</p>
 <td width="60%"> 
 <strong>endpoints</strong>
 
-|     |                                  |                                         |
-| --- | -------------------------------- | --------------------------------------- |
-| GET | /v1/component_events/:id         | Get latestest useage for component      |
-| GET | /v1/component_events/:id/history | Get historic useages for component      |
-| GET | /v1/component_components         | Get latestest useage for all components |
+|     |                                    |                                         |
+| --- | ---------------------------------- | --------------------------------------- |
+| GET | /v1/component_events/:name         | Get latestest useage for component      |
+| GET | /v1/component_events/:name/history | Get historic useages for component      |
+| GET | /v1/component_components           | Get latestest useage for all components |
 
 </td>
 </tr>
@@ -101,19 +101,17 @@ and the storage limits and useages change.</p>
     <td width="40%">   
         <p><strong>id</strong>: unique identifier for the object.</p>
         <p><strong>timestamp</strong>: the date and time at which the event was captured.</p>
-        <p><strong>system_component</strong>: a nested SystemComponent object including all details about the compnent at the timestamp.</p>
+        <p><strong>component_snapshot</strong>: a nested SystemComponent object including all details about the compnent at the timestamp of the event.</p>
     </td>
 
 <td width="60%">
 
 ```json
 {
-  "id": "eve_AJ6yY15pe9xOZe",
-  "object": "component_event",
-  "timestamp": 1642887447,
-  "system_component": {
-    "id": "comp_1032HU2eZvKYlo2CEPtcnUvl",
-    "name": "CrashDumpStore",
+  "event_id": "ecaac8db-e9de-4eb8-b445-a4f5bb00bb0e",
+  "timestamp": "01.23.2022 22:36:27",
+  "component_snapshot": {
+    "component_name": "CrashDump",
     "total_available_storage": 400,
     "storage_limit": 90,
     "current_storage_useage": 100
@@ -170,14 +168,12 @@ and the storage limits and useages change.</p>
 
 ```json
 {
-  "id": "warn_ErTsH2eZvKYlo2CI7ukc",
-  "object": "resource_warning",
-  "warning_type": "over_memory_limit",
+  "warning_id": "4dc9a9af-d050-42a5-a1c6-ccf11f9b5e84",
+  "warning_type": "over memory limit",
   "component_event": {
-    "id": "eve_AJ6yY15pe9xOZe",
-    "timestamp": 2342887447,
-    "system_component": {
-      "id": "comp_1032HU2eZvKYlo2CEPtcnUvl",
+    "event_id": "8ac60ebf-eb1d-4277-b293-accccc8b252f",
+    "timestamp": "01.23.2022 23:41:11",
+    "component_snapshot": {
       "name": "CrashDumpStore",
       "total_available_storage": 400,
       "storage_limit": 90,
