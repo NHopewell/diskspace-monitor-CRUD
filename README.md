@@ -27,7 +27,7 @@ cd diskspace-monitor-CRUD
 2. Create a virtual environment of your choice (in this example, venv)
 
 ```
-python -m venv env
+python3.8 -m venv env
 ```
 
 3. Activate the virtual environment
@@ -55,7 +55,7 @@ pip install -r requirements_dev.txt
 
 ## Usage
 
-The application code which powers the API can be found in `src/diskspacemonitor/api/v1/main.py`. To run the webserver, navigate to this directory
+The application code which powers the API can be found in `src/diskspacemonitor/api/v1/`. To run the webserver, navigate to this directory
 and run:
 
 ```
@@ -65,11 +65,15 @@ uvicorn main:app --reload
 Now our monitoring system is being served over localhost(http://127.0.0.1:8000). You can run my test script which automates sending requests to each end point:
 
 ```
-python example_automated_api_calls.py
+python3.8 scripts/example_automated_api_calls.py
 ```
 
-This script posts some system components and events, we can curl an endpoint to see:
+This script posts some system components and events (some of which triggered warnings in the system), we can curl these endpoints to see:
 
 ```
-curl http://127.0.0.1:8000/v1/component_events/ | python -m json.tool
+# events
+curl http://127.0.0.1:8000/v1/component_events/ | python3.8 -m json.tool
+
+# warnings triggered
+curl http://127.0.0.1:8000/v1/resource_warnings | python3.8 -m json.tool
 ```
