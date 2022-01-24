@@ -6,7 +6,7 @@ This file is intentionally incomplete for the sake of time.
 """
 from fastapi.testclient import TestClient
 
-from diskspacemonitor.api.v1.main import app
+from diskspacemonitor.main import app
 
 # FastAPI test client
 client = TestClient(app)
