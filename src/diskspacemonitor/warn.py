@@ -1,9 +1,8 @@
 """warnings.py
 
-Contains custom Errors attached to the Agent model which trigger
+Contains custom Errors attached to the SystemCompnent model which trigger
 warnings to be registered in our system. These warnings do not
-disrupt the system, but rather are storaged in memory to be queried
-and logged.
+disrupt the system, but rather are storaged in memory to be queried.
 """
 from enum import Enum
 
@@ -14,8 +13,21 @@ class WarningEnum(str, Enum):
 
 
 class OverMemoryLimitError(Exception):
-    """Error that is raised when an Agents current storage useage reported
+    """Error that is raised when a components current storage useage reported
     exceeds its set storage limit.
+    """
+
+    def __init__(self, value: int, message: str) -> None:
+        self.value = value
+        self.message = message
+
+        super().__init__(message)
+
+
+class CloseToMemoryLimitError(Exception):
+    """Error that is raised when a components current storage useage reported
+    comes close to its set storage limit. "close" is defined in
+    settings.CLOSE_TO_STORAGE_LIMIT_TRIGGER
     """
 
     def __init__(self, value: int, message: str) -> None:
