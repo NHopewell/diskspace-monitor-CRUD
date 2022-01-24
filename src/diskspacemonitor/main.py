@@ -10,7 +10,7 @@ from collections import defaultdict
 
 from fastapi import FastAPI
 
-import diskspacemonitor.api.utils as api_utils
+import diskspacemonitor.utils as api_utils
 import diskspacemonitor.models as models
 import diskspacemonitor.warn as monitor_warnings
 
