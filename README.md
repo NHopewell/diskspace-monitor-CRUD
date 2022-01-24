@@ -2,9 +2,13 @@
 
 [![Diskspace Monitor Test Suite](https://github.com/NHopewell/diskspace-monitor-CRUD/actions/workflows/tests.yml/badge.svg)](https://github.com/NHopewell/diskspace-monitor-CRUD/actions/workflows/tests.yml)
 
+**Background**
+
 The build system is part of a large environment with a multitude of different components. Many of the components have some sort of storage (examples: crash dump handler, versioning system, build distribution). To ensure none of the services go down due to a lack of available storage, the systems have an agent that reports disk usage back to a central monitoring facility, which evaluates the collected data against preset rules and provides status and warnings through API endpoints.
 
-## Getting Started WITHOUT Docker
+The current project implements this central monitoring facility.
+
+## Getting Started
 
 ### Prerequisites
 
@@ -55,10 +59,12 @@ pip install -r requirements_dev.txt
 
 ## Usage
 
-The application code which powers the API can be found in `src/diskspacemonitor/api/v1/`. To run the webserver, navigate to this directory
+The application code which powers the API can be found in `src/diskspacemonitor/api/v1/`. To run the webserver:
 and run:
 
 ```
+cd src/diskspacemonitor/api/v1/
+
 uvicorn main:app --reload
 ```
 
