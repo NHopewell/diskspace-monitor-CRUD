@@ -7,11 +7,11 @@ The Diskspace Monitor API is a RESTful API which is build around **3 CORE RESOUR
 <table border="0">
 <tr>
 <td width="40%">   
-<p> An SystemComponent represents a component of the build system we would like to
-monitor. A SystemComponent is created on the monitoring system (with a name and
-available storage) any time an agent registered a new component in the system.</p>
+<p> A SystemComponent represents a component of the build system we would like to
+monitor. A SystemComponent is created (with a name and
+available storage) any time an agent registered a new component in the monitoring system.</p>
 
-<p>An example of an Agent might be a CrashDumpStore with 400G of storage.</p>
+<p>An example of a SystemComponent might be a CrashDumpStore with 400G of storage.</p>
 
 </td>
 
@@ -34,14 +34,13 @@ available storage) any time an agent registered a new component in the system.</
 
 <table border="0">
 <tr>
-<td width="40%" vertical-align="top">  
-<p><strong>id</strong>: unique identifier for the object.</p>
+<td width="40%" vertical-align="top">
 
 <p><strong>name</strong>: unique name for the system component.</p>
 
 <p><strong>total_available_storage</strong>: the total storage (in Gigabits) available to the component.</p>
 
-<p><strong>storage_limit</strong>: the upper limit on current storage useage (as a percentage of 100).</p>
+<p><strong>storage_limit</strong>: the upper limit on total storage useage (as a percentage of 100).</p>
 
 <p><strong>current_storage_useage</strong>: the amount of the components storage (in Gigabits) currently being used.</p>
 
@@ -73,9 +72,9 @@ available storage) any time an agent registered a new component in the system.</
 <table border="0">
 <tr>
 <td width="40%">   
-<p>A ComponentEvent is a data point of a given SystemComponents storage
+<p>A ComponentEvent is a data point related a given SystemComponents storage
 useage one moment in time. These are automatically generated when new components are registered
-and the storage limits and useages change.</p>
+in the system and when storage limits and useages change.</p>
 
 </td>
 
@@ -109,11 +108,11 @@ and the storage limits and useages change.</p>
   "event_id": "ecaac8db-e9de-4eb8-b445-a4f5bb00bb0e",
   "timestamp": "01.23.2022 22:36:27",
   "component_snapshot": {
-    "component_name": "CrashDump",
-    "total_available_storage": 400,
-    "storage_limit": 90,
-    "current_storage_useage": 100
-  }
+      "component_name": "CrashDump",
+      "total_available_storage": 400,
+      "storage_limit": 90,
+      "current_storage_useage": 100
+    }
 }
 ```
 
@@ -169,15 +168,15 @@ and the storage limits and useages change.</p>
   "warning_id": "4dc9a9af-d050-42a5-a1c6-ccf11f9b5e84",
   "warning_type": "over memory limit",
   "component_event": {
-    "event_id": "8ac60ebf-eb1d-4277-b293-accccc8b252f",
-    "timestamp": "01.23.2022 23:41:11",
-    "component_snapshot": {
-      "name": "CrashDumpStore",
-      "total_available_storage": 400,
-      "storage_limit": 90,
-      "current_storage_useage": 395
+        "event_id": "8ac60ebf-eb1d-4277-b293-accccc8b252f",
+        "timestamp": "01.23.2022 23:41:11",
+        "component_snapshot": {
+          "name": "CrashDumpStore",
+          "total_available_storage": 400,
+          "storage_limit": 90,
+          "current_storage_useage": 395
+        }
     }
-  }
 }
 ```
 
