@@ -25,17 +25,17 @@ in_memory_db = {
 }
 
 
-########################################################################
-#                                                                      #
-#                     System Component Endpoints                       #
-#                     --------------------------                       #
-#                                                                      #
-#    POST	 /v1/system_components	      Create System Component      #
-#    GET	 /v1/system_components/:name  Retrieve System Component    #
-#    PATCH	 /v1/system_components/:name  Update System Component      #
-#    DELETE	 /v1/system_components/:name  Delete System Component      #
-#    GET	 /v1/system_components	      List System Components       #
-#                                                                      #
+#######################################################################
+#                                                                      
+#                     System Component Endpoints                       
+#                     --------------------------                       
+#                                                                      
+#    POST	 /v1/system_components	      Create System Component      
+#    GET	 /v1/system_components/:name  Retrieve System Component    
+#    PATCH	 /v1/system_components/:name  Update System Component      
+#    DELETE	 /v1/system_components/:name  Delete System Component      
+#    GET	 /v1/system_components	      List System Components       
+#                                                                      
 ########################################################################
 
 
@@ -171,16 +171,16 @@ def list_system_components(
     return filtered
 
 
-########################################################################################
-#                                                                                      #
-#                           Component Events Endpoints                                 #
-#                           --------------------------                                 #
-#                                                                                      #
-#  GET	 /v1/component_events/:name	          Get latestest useage for component       #
-#  GET	 /v1/component_events/:name/history   Get historic useages for component       #
-#  GET	 /v1/component_components             Get latestest useage for all components  #
-#                                                                                      #
-########################################################################################
+#######################################################################################
+#                                                                                      
+#                           Component Events Endpoints                                 
+#                           --------------------------                                 
+#                                                                                      
+#  GET	 /v1/component_events/:name	          Get latestest useage for component       
+#  GET	 /v1/component_events/:name/history   Get historic useages for component       
+#  GET	 /v1/component_components             Get latestest useage for all components  
+#                                                                                      
+#######################################################################################
 
 
 @app.get("/v1/component_events/{component_name}")
@@ -281,13 +281,13 @@ def get_all_latest_useages(
     return latest_events_for_each_component_response
 
 
-########################################################################
-#                                                                      #
-#                    Resource Warnings Endpoints                       #
-#                    ---------------------------                       #
-#                                                                      #
-#      GET   /v1/resource_warnings	  List all resource warnings       #
-########################################################################
+#######################################################################
+#                                                                      
+#                    Resource Warnings Endpoints                       
+#                    ---------------------------                       
+#                                                                      
+#      GET   /v1/resource_warnings	  List all resource warnings       
+#######################################################################
 
 
 @app.get("/v1/resource_warnings")
