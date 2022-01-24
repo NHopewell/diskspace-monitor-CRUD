@@ -4,4 +4,4 @@
 CLOSE_TO_STORAGE_LIMIT_TRIGGER = 10
 
 
-# LOGGING
+# more settings would go here ....
