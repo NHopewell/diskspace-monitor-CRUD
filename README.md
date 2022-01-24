@@ -65,7 +65,7 @@ The application code which powers the API can be found in `src/diskspacemonitor/
 and run:
 
 ```
-cd src/diskspacemonitor/api/v1/
+cd src/diskspacemonitor/
 
 uvicorn main:app --reload
 ```
