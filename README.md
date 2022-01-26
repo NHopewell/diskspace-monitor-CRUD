@@ -79,7 +79,7 @@ This script posts some system components and events (some of which triggered war
 
 ```
 # events
-curl http://127.0.0.1:8000/v1/component_events/ | python -m json.tool
+curl http://127.0.0.1:8000/v1/component_events | python -m json.tool
 
 # warnings triggered
 curl http://127.0.0.1:8000/v1/resource_warnings | python -m json.tool

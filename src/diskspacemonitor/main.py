@@ -246,7 +246,7 @@ def get_useage_history(
     return filtered
 
 
-@app.get("/v1/component_events/")
+@app.get("/v1/component_events")
 def get_all_latest_useages(
     skip: int = 0, limit: t.Optional[int] = 100
 ) -> t.List[t.Dict[str, str]]:
