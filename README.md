@@ -103,7 +103,7 @@ cd diskspace-monitor-CRUD
 docker build . -t diskspace-monitor
 ```
 
-3. You'll notice in the Dockerfile I have exposed port 8000. Now run the Docker image with port forwarding:
+3. You'll notice in the Dockerfile that we are using the port 8000. Now run the Docker image with port forwarding:
 
 ```
 docker run -p 8000:8000 diskspace-monitor
