@@ -127,9 +127,7 @@ def update_system_component(
 
     if warning_flag:
         # register new system event along with a resource warning
-        api_utils.register_system_event(
-            system_component, in_memory_db, warning_type
-        )
+        api_utils.register_system_event(system_component, in_memory_db, warning_type)
     else:
         # register new system event only
         api_utils.register_system_event(system_component, in_memory_db)
