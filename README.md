@@ -100,7 +100,7 @@ cd diskspace-monitor-CRUD
 2. Build the Dockerfile:
 
 ```
-docker build . -t diskspace-moonitor
+docker build . -t diskspace-monitor
 ```
 
 3. You'll notice in the Dockerfile I have exposed port 8000. Now run the Docker image with port forwarding:
