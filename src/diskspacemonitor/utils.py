@@ -36,6 +36,15 @@ def register_system_event(
     useage is updated. If this event triggers a resource warning (when
     storage exceeds (or comes close to exceeing) our components storage
     limit, also store this warning in our db.
+
+    Parameters
+    ----------
+    component: SystemComponent
+        a system component object yet to be registered in the system.
+    database: dict
+        an dictionary serving as a database.
+    warning: WarningEnum, optional
+        a warning type if (only if the event triggered a warning).
     """
 
     # always register the system event to capture updates to components
@@ -122,6 +131,15 @@ def get_all_warnings(
     system_components: t.List[str], database: dict
 ) -> t.List[models.ResourceWarning]:
     """Retrieve all resource warnings from our in memory db.
+
+    Parameters
+    ----------
+    system_components: list(str)
+        a list of system component names currently being monitored.
+    database: dict
+        an dictionary serving as a database.
+
+    returns: a list of ResourceWarnings for each components.
     """
 
     all_resource_warning_objects = []
@@ -140,6 +158,17 @@ def list_warning_dicts(
 ) -> t.List[t.Dict[str, str]]:
     """Pair each resource warning object to the system component that
     triggered it and return as dict.
+
+    Parameters
+    ----------
+    warning_objects: list(ResourceWarning)
+        a list of ResourceWarnings
+    system_components: list(str)
+        a list of system component names currently being monitored.
+    database: dict
+        an dictionary serving as a database.
+
+    returns: a list of resource warnings in dictionary format.
     """
 
     paired_warnings = []
