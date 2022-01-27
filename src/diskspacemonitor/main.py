@@ -5,7 +5,6 @@ of our API. We are using a simple in-memory database to store and retrieve
 data when the application is running. These data are not persisted
 to disk.
 """
-from tkinter import wantobjects
 import typing as t
 from collections import defaultdict
 
