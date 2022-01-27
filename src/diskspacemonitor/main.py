@@ -5,6 +5,7 @@ of our API. We are using a simple in-memory database to store and retrieve
 data when the application is running. These data are not persisted
 to disk.
 """
+from tkinter import wantobjects
 import typing as t
 from collections import defaultdict
 
@@ -26,16 +27,16 @@ in_memory_db = {
 
 
 #######################################################################
-#                                                                      
-#                     System Component Endpoints                       
-#                     --------------------------                       
-#                                                                      
-#    POST	 /v1/system_components	      Create System Component      
-#    GET	 /v1/system_components/:name  Retrieve System Component    
-#    PATCH	 /v1/system_components/:name  Update System Component      
-#    DELETE	 /v1/system_components/:name  Delete System Component      
-#    GET	 /v1/system_components	      List System Components       
-#                                                                      
+#
+#                     System Component Endpoints
+#                     --------------------------
+#
+#    POST	 /v1/system_components	      Create System Component
+#    GET	 /v1/system_components/:name  Retrieve System Component
+#    PATCH	 /v1/system_components/:name  Update System Component
+#    DELETE	 /v1/system_components/:name  Delete System Component
+#    GET	 /v1/system_components	      List System Components
+#
 ########################################################################
 
 
@@ -50,7 +51,7 @@ def create_system_component(component: models.SystemComponent) -> None:
         return response
 
     api_utils.register_system_component(component, in_memory_db)
-    api_utils.register_system_event(component.name, component, in_memory_db)
+    api_utils.register_system_event(component, in_memory_db)
 
 
 @app.get("/v1/system_components/{component_name}")
@@ -127,11 +128,11 @@ def update_system_component(
     if warning_flag:
         # register new system event along with a resource warning
         api_utils.register_system_event(
-            component_name, system_component, in_memory_db, warning_type
+            system_component, in_memory_db, warning_type
         )
     else:
         # register new system event only
-        api_utils.register_system_event(component_name, system_component, in_memory_db)
+        api_utils.register_system_event(system_component, in_memory_db)
 
 
 @app.delete("/v1/system_components/{component_name}")
@@ -173,14 +174,14 @@ def list_system_components(
 
 
 #######################################################################################
-#                                                                                      
-#                           Component Events Endpoints                                 
-#                           --------------------------                                 
-#                                                                                      
-#  GET	 /v1/component_events/:name	          Get latestest useage for component       
-#  GET	 /v1/component_events/:name/history   Get historic useages for component       
-#  GET	 /v1/component_components             Get latestest useage for all components  
-#                                                                                      
+#
+#                           Component Events Endpoints
+#                           --------------------------
+#
+#  GET	 /v1/component_events/:name	          Get latestest useage for component
+#  GET	 /v1/component_events/:name/history   Get historic useages for component
+#  GET	 /v1/component_components             Get latestest useage for all components
+#
 #######################################################################################
 
 
@@ -285,11 +286,11 @@ def get_all_latest_useages(
 
 
 #######################################################################
-#                                                                      
-#                    Resource Warnings Endpoints                       
-#                    ---------------------------                       
-#                                                                      
-#      GET   /v1/resource_warnings	  List all resource warnings       
+#
+#                    Resource Warnings Endpoints
+#                    ---------------------------
+#
+#      GET   /v1/resource_warnings	  List all resource warnings
 #######################################################################
 
 
@@ -306,34 +307,14 @@ def list_resource_warnings(
     limit: int
         The total number of system components to return.
     """
-    # extract all resource warnings from the db
-    all_system_components = in_memory_db["system_events"].keys()
-    all_resource_warning_objects = []
-    for component in all_system_components:
-        for warning_object in in_memory_db["resource_warnings"][component]:
-            all_resource_warning_objects.append(warning_object)
+    # extract all resource warnings from the db and pair to the component
+    # that triggered them
+    system_components = in_memory_db["system_events"].keys()
+    warning_objects = api_utils.get_all_warnings(system_components, in_memory_db)
+    paired = api_utils.list_warning_dicts(
+        warning_objects, system_components, in_memory_db
+    )
 
-    # pair each resource warning to its component system event based on ids
-    all_resource_warnings = []
-    for resource_warning in all_resource_warning_objects:
-        warning_event_component_id = resource_warning.component_event_id
-        for component in all_system_components:
-            events_for_component = in_memory_db["system_events"][component]
-            for event in events_for_component:
-                if warning_event_component_id == event.event_id:
-                    all_resource_warnings.append(
-                        api_utils.return_warning_dict(
-                            resource_warning.warning_id,
-                            resource_warning.warning_type,
-                            resource_warning.component_event_id,
-                            event.timestamp,
-                            event.component_name,
-                            event.total_available_storage,
-                            event.storage_limit,
-                            event.current_storage_useage,
-                        )
-                    )
-
-    filtered = all_resource_warnings[skip : skip + limit]
+    filtered = paired[skip : skip + limit]
 
     return filtered

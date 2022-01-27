@@ -1,3 +1,7 @@
+"""utils.py
+
+This module containers helpers used by main.py
+"""
 import typing as t
 import datetime
 import uuid
@@ -24,7 +28,6 @@ def register_system_component(
 
 
 def register_system_event(
-    component_name: str,
     component: t.Union[models.SystemComponent, models.UpdateSystemComponent],
     database: dict,
     warning: t.Optional[monitor_warnings.WarningEnum] = None,
@@ -32,7 +35,8 @@ def register_system_event(
     """Store a new system event in our db when a system component storage
     useage is updated. If this event triggers a resource warning (when
     storage exceeds (or comes close to exceeing) our components storage
-    limit, also store this warning in our db."""
+    limit, also store this warning in our db.
+    """
 
     # always register the system event to capture updates to components
     time_of_event = get_timestamp()
@@ -45,7 +49,7 @@ def register_system_event(
         storage_limit=component.storage_limit,
         current_storage_useage=component.current_storage_useage,
     )
-    database["system_events"][component_name].append(system_event)
+    database["system_events"][component.name].append(system_event)
 
     # if the system event triggered a warning, register it seperately as well
     if warning:
@@ -53,7 +57,7 @@ def register_system_event(
         resource_warning = models.ResourceWarning(
             warning_id=warning_id, warning_type=warning, component_event_id=event_id
         )
-        database["resource_warnings"][component_name].append(resource_warning)
+        database["resource_warnings"][component.name].append(resource_warning)
 
 
 def get_system_component(component_name: str, database: dict) -> t.Dict[str, str]:
@@ -112,3 +116,51 @@ def return_warning_dict(
     }
 
     return warning_dict
+
+
+def get_all_warnings(
+    system_components: t.List[str], database: dict
+) -> t.List[models.ResourceWarning]:
+    """Retrieve all resource warnings from our in memory db.
+    """
+
+    all_resource_warning_objects = []
+
+    for component in system_components:
+        for warning_object in database["resource_warnings"][component]:
+            all_resource_warning_objects.append(warning_object)
+
+    return all_resource_warning_objects
+
+
+def list_warning_dicts(
+    warning_objects: t.List[models.ResourceWarning],
+    system_components: t.List[str],
+    database: dict,
+) -> t.List[t.Dict[str, str]]:
+    """Pair each resource warning object to the system component that
+    triggered it and return as dict.
+    """
+
+    paired_warnings = []
+
+    for resource_warning in warning_objects:
+        warning_event_component_id = resource_warning.component_event_id
+        for component in system_components:
+            events_for_component = database["system_events"][component]
+            for event in events_for_component:
+                if warning_event_component_id == event.event_id:
+                    paired_warnings.append(
+                        return_warning_dict(
+                            resource_warning.warning_id,
+                            resource_warning.warning_type,
+                            resource_warning.component_event_id,
+                            event.timestamp,
+                            event.component_name,
+                            event.total_available_storage,
+                            event.storage_limit,
+                            event.current_storage_useage,
+                        )
+                    )
+
+    return paired_warnings
