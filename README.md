@@ -61,7 +61,7 @@ pip install -r requirements_dev.txt
 
 ## Usage
 
-The application code which powers the API can be found in `src/diskspacemonitor/api/v1/`. To run the webserver:
+The application code which powers the API can be found in `src/diskspacemonitor/`. To run the webserver:
 
 ```
 cd src/diskspacemonitor/

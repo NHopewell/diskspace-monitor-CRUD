@@ -8,7 +8,7 @@ RUN pip3 install --upgrade pip
 RUN pip3 install -e .   
 RUN pip3 install -r requirements.txt
 
-WORKDIR /usr/src/app/src/diskspacemonitor/api/v1/
+WORKDIR /usr/src/app/src/diskspacemonitor
 
 EXPOSE 8000
 
