@@ -114,6 +114,21 @@ class ComponentEvent(pydantic.BaseModel):
     storage_limit: int
     current_storage_useage: int
 
+    def return_custom_event_dict(self) -> t.Dict[str, t.Union[str, t.Dict[str, str]]]:
+        """Convert our SystemEvents to the JSON structure desired"""
+        event_dict = {
+            "event_id": self.event_id,
+            "timestamp": self.timestamp,
+            "component_snapshot": {
+                "component_name": self.component_name,
+                "total_available_storage": self.total_available_storage,
+                "storage_limit": self.storage_limit,
+                "current_storage_useage": self.current_storage_useage,
+            },
+        }
+
+        return event_dict
+
 
 class ResourceWarning(pydantic.BaseModel):
     """A ResourceWarning is a warning registered when a SystemComponent
