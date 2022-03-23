@@ -71,10 +71,10 @@ def register_system_event(
 
 def get_system_component(component_name: str, database: dict) -> t.Dict[str, str]:
     """Return a system component from our db."""
-    return database["system_components"][component_name].dict()
+    return database["system_components"][component_name]
 
 
-def return_event_dict(
+def return_custom_event_dict(
     event_id: str,
     timestamp: str,
     component_name: str,
