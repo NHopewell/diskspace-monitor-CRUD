@@ -5,6 +5,8 @@ import pydantic
 from diskspacemonitor import settings
 from diskspacemonitor import warn
 
+JSON = t.Union[t.Dict[str, str], t.Dict[str, t.Union[str, t.Dict[str, str]]]]
+
 
 class SystemComponent(pydantic.BaseModel):
     """
@@ -114,7 +116,7 @@ class ComponentEvent(pydantic.BaseModel):
     storage_limit: int
     current_storage_useage: int
 
-    def return_custom_event_dict(self) -> t.Dict[str, t.Union[str, t.Dict[str, str]]]:
+    def return_custom_event_dict(self) -> JSON:
         """Convert our SystemEvents to the JSON structure desired"""
         event_dict = {
             "event_id": self.event_id,
@@ -138,3 +140,23 @@ class ResourceWarning(pydantic.BaseModel):
     warning_id: str
     warning_type: warn.WarningEnum
     component_event_id: str
+
+    def return_custom_warning_dict(self, event: ComponentEvent) -> JSON:
+        """Convert our ResourceWarning to the JSON structure desired"""
+
+        warning_dict = {
+            "warning_id": self.warning_id,
+            "warning_type": self.warning_type,
+            "component_event": {
+                "event_id": self.component_event_id,
+                "timestamp": event.timestamp,
+                "component_snapshot": {
+                    "name": event.component_name,
+                    "total_available_storage": event.total_available_storage,
+                    "storage_limit": event.storage_limit,
+                    "current_storage_useage": event.current_storage_useage,
+                },
+            },
+        }
+
+        return warning_dict

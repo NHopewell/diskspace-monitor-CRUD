@@ -74,36 +74,6 @@ def get_system_component(component_name: str, database: dict) -> t.Dict[str, str
     return database["system_components"][component_name]
 
 
-def return_warning_dict(
-    warning_id: str,
-    warning_type: str,
-    event_id: str,
-    timestamp: str,
-    component_name: str,
-    total_available_storage: str,
-    storage_limit: str,
-    current_storage_useage: str,
-) -> t.Dict[str, t.Union[str, t.Dict[str, t.Union[str, t.Dict[str, str]]]]]:
-    """Helper to convert our ResourceWarning to the JSON structure desired"""
-
-    warning_dict = {
-        "warning_id": warning_id,
-        "warning_type": warning_type,
-        "component_event": {
-            "event_id": event_id,
-            "timestamp": timestamp,
-            "component_snapshot": {
-                "name": component_name,
-                "total_available_storage": total_available_storage,
-                "storage_limit": storage_limit,
-                "current_storage_useage": current_storage_useage,
-            },
-        },
-    }
-
-    return warning_dict
-
-
 def get_all_warnings(
     system_components: t.List[str], database: dict
 ) -> t.List[models.ResourceWarning]:
@@ -157,16 +127,7 @@ def list_warning_dicts(
             for event in events_for_component:
                 if warning_event_component_id == event.event_id:
                     paired_warnings.append(
-                        return_warning_dict(
-                            resource_warning.warning_id,
-                            resource_warning.warning_type,
-                            resource_warning.component_event_id,
-                            event.timestamp,
-                            event.component_name,
-                            event.total_available_storage,
-                            event.storage_limit,
-                            event.current_storage_useage,
-                        )
+                        resource_warning.return_custom_warning_dict(event)
                     )
 
     return paired_warnings
