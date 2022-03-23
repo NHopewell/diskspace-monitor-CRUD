@@ -14,7 +14,8 @@ from fastapi import Response
 
 import diskspacemonitor.utils as api_utils
 import diskspacemonitor.warn as monitor_warnings
-from diskspacemonitor import models
+from diskspacemonitor.models.system_component import SystemComponent
+from diskspacemonitor.models.system_component import SystemComponentUpdate
 
 
 app = FastAPI()
@@ -41,8 +42,8 @@ in_memory_db = {
 ###################################################################
 
 
-@app.post("/v1/system_components", response_model=models.SystemComponent)
-def create_system_component(component: models.SystemComponent) -> None:
+@app.post("/v1/system_components", response_model=SystemComponent)
+def create_system_component(component: SystemComponent) -> None:
     """Create a new system component in our monitored system."""
 
     if component.name in in_memory_db["system_components"]:
@@ -55,9 +56,7 @@ def create_system_component(component: models.SystemComponent) -> None:
     return component
 
 
-@app.get(
-    "/v1/system_components/{component_name}", response_model=models.SystemComponent
-)
+@app.get("/v1/system_components/{component_name}", response_model=SystemComponent)
 def read_system_component(component_name: str) -> t.Dict[str, str]:
     """Retrieve data regarding a single system component of our monitored system.
 
@@ -75,11 +74,9 @@ def read_system_component(component_name: str) -> t.Dict[str, str]:
     return component
 
 
-@app.patch(
-    "/v1/system_components/{component_name}", response_model=models.SystemComponent
-)
+@app.patch("/v1/system_components/{component_name}", response_model=SystemComponent)
 def update_system_component(
-    component_name: str, updated_component: models.SystemComponentUpdate
+    component_name: str, updated_component: SystemComponentUpdate
 ) -> None:
     """Update system component in our monitored system.
 

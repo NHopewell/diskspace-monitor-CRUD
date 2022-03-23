@@ -6,8 +6,11 @@ import datetime
 import typing as t
 import uuid
 
-from diskspacemonitor import models
 from diskspacemonitor import warn
+from diskspacemonitor.models.component_event import ComponentEvent
+from diskspacemonitor.models.resource_warning import ResourceWarning
+from diskspacemonitor.models.system_component import SystemComponent
+from diskspacemonitor.models.system_component import SystemComponentUpdate
 
 
 def return_uuid() -> str:
@@ -20,15 +23,13 @@ def return_timestamp() -> str:
     return datetime.datetime.now().strftime("%m.%d.%Y %H:%M:%S")
 
 
-def register_system_component(
-    component: models.SystemComponent, database: dict
-) -> None:
+def register_system_component(component: SystemComponent, database: dict) -> None:
     """Store a newly created systemc component in our db."""
     database["system_components"][component.name] = component
 
 
 def register_system_event(
-    component: t.Union[models.SystemComponent, models.SystemComponentUpdate],
+    component: t.Union[SystemComponent, SystemComponentUpdate],
     database: dict,
     warning: t.Optional[warn.WarningEnum] = None,
 ) -> None:
@@ -50,7 +51,7 @@ def register_system_event(
     # always register the system event to capture updates to components
     time_of_event = return_timestamp()
     event_id = return_uuid()
-    system_event = models.ComponentEvent(
+    system_event = ComponentEvent(
         event_id=event_id,
         timestamp=time_of_event,
         component_name=component.name,
@@ -63,7 +64,7 @@ def register_system_event(
     # if the system event triggered a warning, register it seperately as well
     if warning:
         warning_id = return_uuid()
-        resource_warning = models.ResourceWarning(
+        resource_warning = ResourceWarning(
             warning_id=warning_id, warning_type=warning, component_event_id=event_id
         )
         database["resource_warnings"][component.name].append(resource_warning)
@@ -76,7 +77,7 @@ def get_system_component(component_name: str, database: dict) -> t.Dict[str, str
 
 def get_all_warnings(
     system_components: t.List[str], database: dict
-) -> t.List[models.ResourceWarning]:
+) -> t.List[ResourceWarning]:
     """Retrieve all resource warnings from our in memory db.
 
     Parameters
@@ -99,7 +100,7 @@ def get_all_warnings(
 
 
 def list_warning_dicts(
-    warning_objects: t.List[models.ResourceWarning],
+    warning_objects: t.List[ResourceWarning],
     system_components: t.List[str],
     database: dict,
 ) -> t.List[t.Dict[str, str]]:

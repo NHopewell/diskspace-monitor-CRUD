@@ -8,8 +8,8 @@ This file is intentionally incomplete for the sake of time.
 """
 import pytest
 
-from diskspacemonitor.models import SystemComponent
 import diskspacemonitor.warn as warn
+from diskspacemonitor.models.system_component import SystemComponent
 
 
 def test_storage_limit_101_percent_invalid(crash_dump_50: SystemComponent) -> bool:

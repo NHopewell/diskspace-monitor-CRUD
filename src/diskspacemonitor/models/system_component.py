@@ -5,8 +5,6 @@ import pydantic
 from diskspacemonitor import settings
 from diskspacemonitor import warn
 
-JSON = t.Union[t.Dict[str, str], t.Dict[str, t.Union[str, t.Dict[str, str]]]]
-
 
 class SystemComponent(pydantic.BaseModel):
     """
@@ -100,64 +98,3 @@ class SystemComponentUpdate(SystemComponent):
     total_available_storage: t.Optional[int] = None
     storage_limit: t.Optional[int] = None
     current_storage_useage: t.Optional[int] = None
-
-
-class ComponentEvent(pydantic.BaseModel):
-    """A ComponentEvent is a data point of a given SystemComponents storage
-    useage one moment in time.
-
-    note: These are automatically generated when new components are registered
-    and the storage limits and useages change.
-    """
-
-    event_id: str
-    timestamp: str
-    component_name: str
-    total_available_storage: int
-    storage_limit: int
-    current_storage_useage: int
-
-    def return_custom_event_dict(self) -> JSON:
-        """Convert our SystemEvents to the JSON structure desired"""
-        event_dict = {
-            "event_id": self.event_id,
-            "timestamp": self.timestamp,
-            "component_snapshot": {
-                "component_name": self.component_name,
-                "total_available_storage": self.total_available_storage,
-                "storage_limit": self.storage_limit,
-                "current_storage_useage": self.current_storage_useage,
-            },
-        }
-
-        return event_dict
-
-
-class ResourceWarning(pydantic.BaseModel):
-    """A ResourceWarning is a warning registered when a SystemComponent
-    reports a storage useage above, or close to, its upper limit.
-    """
-
-    warning_id: str
-    warning_type: warn.WarningEnum
-    component_event_id: str
-
-    def return_custom_warning_dict(self, event: ComponentEvent) -> JSON:
-        """Convert our ResourceWarning to the JSON structure desired"""
-
-        warning_dict = {
-            "warning_id": self.warning_id,
-            "warning_type": self.warning_type,
-            "component_event": {
-                "event_id": self.component_event_id,
-                "timestamp": event.timestamp,
-                "component_snapshot": {
-                    "name": event.component_name,
-                    "total_available_storage": event.total_available_storage,
-                    "storage_limit": event.storage_limit,
-                    "current_storage_useage": event.current_storage_useage,
-                },
-            },
-        }
-
-        return warning_dict
