@@ -10,12 +10,12 @@ from diskspacemonitor import models
 from diskspacemonitor import warn
 
 
-def get_uuid() -> str:
+def return_uuid() -> str:
     """Return a universally unique identifier"""
     return str(uuid.uuid4())
 
 
-def get_timestamp() -> str:
+def return_timestamp() -> str:
     """Return current date and time in string format"""
     return datetime.datetime.now().strftime("%m.%d.%Y %H:%M:%S")
 
@@ -48,8 +48,8 @@ def register_system_event(
     """
 
     # always register the system event to capture updates to components
-    time_of_event = get_timestamp()
-    event_id = get_uuid()
+    time_of_event = return_timestamp()
+    event_id = return_uuid()
     system_event = models.ComponentEvent(
         event_id=event_id,
         timestamp=time_of_event,
@@ -62,7 +62,7 @@ def register_system_event(
 
     # if the system event triggered a warning, register it seperately as well
     if warning:
-        warning_id = get_uuid()
+        warning_id = return_uuid()
         resource_warning = models.ResourceWarning(
             warning_id=warning_id, warning_type=warning, component_event_id=event_id
         )
