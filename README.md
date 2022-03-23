@@ -113,6 +113,13 @@ The application is now accessible over localhost http://127.0.0.1:8000/docs
 
 ## Testing and CI
 
+This project is setup with the following things to ensure PEP8 compliance and proper builds:
+
+- pre-commit hooks including black, Flake8, and other hooks.
+- local tests for both the API and underlying models with Pytest.
+- virtual env management with tox to run pytests on different Python versions and environments.
+- github actions to automatically run tox with these different Python versions across different operating systems when changes are made to the repo.
+
 To execute all tests manually in your virtualenv, run:
 
 ```
@@ -127,4 +134,4 @@ tox
 
 This will run the test suite in 6 different virtural environments using ubuntu and Windows, each with Python versions 3.8, 3.9. and 3.10.
 
-In order to test these multiple environments on multiple different machines automatically when the code is upated, this project is setup with github actions. On git pushes to master or pull requests, tox will be run in these 6 environments concurrently on 6 different machines.
+On git pushes to master or pull requests, tox will be run in these 6 environments concurrently on 6 different machines.
