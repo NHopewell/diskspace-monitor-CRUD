@@ -79,7 +79,7 @@ def read_system_component(component_name: str) -> t.Dict[str, str]:
     "/v1/system_components/{component_name}", response_model=models.SystemComponent
 )
 def update_system_component(
-    component_name: str, updated_component: models.UpdateSystemComponent
+    component_name: str, updated_component: models.SystemComponentUpdate
 ) -> None:
     """Update system component in our monitored system.
 

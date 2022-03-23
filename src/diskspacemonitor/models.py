@@ -57,6 +57,7 @@ class SystemComponent(pydantic.BaseModel):
 
         return free_storage
 
+    # cant use setters with pydantic and paydantic validators are breaking everything
     def set_storage_limit(self, value: int) -> None:
         if value not in range(0, 101):
             msg = "The storage limit must be between 0 - 100."
@@ -91,7 +92,7 @@ class SystemComponent(pydantic.BaseModel):
             raise warn.CloseToMemoryLimitError(value=value, message=msg)
 
 
-class UpdateSystemComponent(SystemComponent):
+class SystemComponentUpdate(SystemComponent):
     """An UpdateSystemComponent is a SystemComponent with all optional
     attributes which is created when an agent issues an update via the API"""
 

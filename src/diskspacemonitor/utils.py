@@ -28,7 +28,7 @@ def register_system_component(
 
 
 def register_system_event(
-    component: t.Union[models.SystemComponent, models.UpdateSystemComponent],
+    component: t.Union[models.SystemComponent, models.SystemComponentUpdate],
     database: dict,
     warning: t.Optional[warn.WarningEnum] = None,
 ) -> None:
