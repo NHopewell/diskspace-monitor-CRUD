@@ -11,13 +11,13 @@ from collections import defaultdict
 from fastapi import FastAPI
 
 import diskspacemonitor.utils as api_utils
-import diskspacemonitor.models as models
 import diskspacemonitor.warn as monitor_warnings
+from diskspacemonitor import models
 
 
 app = FastAPI()
 
-### DATABASE ###
+# DATABASE
 in_memory_db = {
     "system_components": {},
     "system_events": defaultdict(list),
@@ -26,16 +26,16 @@ in_memory_db = {
 
 
 ###################################################################
-#                                                                   
-#                     System Component Endpoints                                
-#                     --------------------------                    
-#                                                                   
-#  POST    /v1/system_components         Create System Component    
-#  GET     /v1/system_components/:name   Retrieve System Component  
-#  PATCH   /v1/system_components/:name   Update System Component    
-#  DELETE  /v1/system_components/:name   Delete System Component    
-#  GET     /v1/system_components         List System Components     
-#                                                                   
+#
+#                     System Component Endpoints
+#                     --------------------------
+#
+#  POST    /v1/system_components         Create System Component
+#  GET     /v1/system_components/:name   Retrieve System Component
+#  PATCH   /v1/system_components/:name   Update System Component
+#  DELETE  /v1/system_components/:name   Delete System Component
+#  GET     /v1/system_components         List System Components
+#
 ###################################################################
 
 
@@ -91,11 +91,11 @@ def update_system_component(
 
     system_component = in_memory_db["system_components"][component_name]
 
-    #### update component total storage if in request ###
+    # update component total storage if in request
     if new_total := updated_component.total_available_storage:
         system_component.total_available_storage = new_total
 
-    #### update component storage limit if in request ###
+    # update component storage limit if in request
     if new_storage_limit := updated_component.storage_limit:
         try:
             system_component.set_storage_limit(new_storage_limit)
@@ -105,7 +105,7 @@ def update_system_component(
             }
             return response
 
-    #### update component storage useage if in request ###
+    # update component storage useage if in request
     warning_flag, warning_type = False, None
 
     if new_current_useage := updated_component.current_storage_useage:
@@ -171,14 +171,14 @@ def list_system_components(
 
 
 #####################################################################################
-#                                                                                      
-#                           Component Events Endpoints                                 
-#                           --------------------------                                 
-#                                                                                     
-#   GET   /v1/component_events/:name           Get latestest useage for a component     
-#   GET   /v1/component_events/:name/history   Get historic useages for a component      
-#   GET   /v1/component_components             Get latestest useage for all components  
-#                                                                                      
+#
+#                           Component Events Endpoints
+#                           --------------------------
+#
+#   GET   /v1/component_events/:name           Get latestest useage for a component
+#   GET   /v1/component_events/:name/history   Get historic useages for a component
+#   GET   /v1/component_components             Get latestest useage for all components
+#
 ######################################################################################
 
 
@@ -283,12 +283,12 @@ def get_all_latest_useages(
 
 
 ##########################################################
-#                                                            
-#              Resource Warnings Endpoints                      
-#              ---------------------------                     
-#                                                          
+#
+#              Resource Warnings Endpoints
+#              ---------------------------
+#
 #   GET   /v1/resource_warnings	 List all resource warnings
-#                                                           
+#
 ###########################################################
 
 

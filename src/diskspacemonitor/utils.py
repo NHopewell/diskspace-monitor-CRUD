@@ -2,12 +2,12 @@
 
 This module containers helpers used by main.py
 """
-import typing as t
 import datetime
+import typing as t
 import uuid
 
-import diskspacemonitor.models as models
-import diskspacemonitor.warn as monitor_warnings
+from diskspacemonitor import models
+from diskspacemonitor import warn
 
 
 def get_uuid() -> str:
@@ -30,7 +30,7 @@ def register_system_component(
 def register_system_event(
     component: t.Union[models.SystemComponent, models.UpdateSystemComponent],
     database: dict,
-    warning: t.Optional[monitor_warnings.WarningEnum] = None,
+    warning: t.Optional[warn.WarningEnum] = None,
 ) -> None:
     """Store a new system event in our db when a system component storage
     useage is updated. If this event triggers a resource warning (when

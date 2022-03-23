@@ -1,9 +1,9 @@
-import pydantic
 import typing as t
 
-import diskspacemonitor.warn as warn
-from diskspacemonitor.warn import WarningEnum
-import diskspacemonitor.settings as settings
+import pydantic
+
+from diskspacemonitor import settings
+from diskspacemonitor import warn
 
 
 class SystemComponent(pydantic.BaseModel):
@@ -121,5 +121,5 @@ class ResourceWarning(pydantic.BaseModel):
     """
 
     warning_id: str
-    warning_type: WarningEnum
+    warning_type: warn.WarningEnum
     component_event_id: str
