@@ -1,6 +1,6 @@
 """test_api.py
 
-tests the application API functions. 
+tests the application API functions.
 
 This file is intentionally incomplete for the sake of time.
 """
@@ -30,7 +30,7 @@ def test_system_component_name_not_found():
     response = client.get("/v1/system_components/ImaginaryComponent")
 
     actual = response.json()
-    expected = {"Error": "ImaginaryComponent does not exist in the monitored system."}
+    expected = {"detail": "ImaginaryComponent does not exist in the monitored system."}
 
     assert actual == expected
 
