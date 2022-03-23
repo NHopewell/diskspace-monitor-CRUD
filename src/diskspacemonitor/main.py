@@ -10,6 +10,7 @@ from collections import defaultdict
 
 from fastapi import FastAPI
 from fastapi import HTTPException
+from fastapi import Response
 
 import diskspacemonitor.utils as api_utils
 import diskspacemonitor.warn as monitor_warnings
@@ -151,6 +152,8 @@ def delete_system_component(component_name: str) -> None:
 
     # not deleting the component from events or warnings to have backlog
     del in_memory_db["system_components"][component_name]
+
+    return Response(status_code=204)
 
 
 @app.get("/v1/system_components")
