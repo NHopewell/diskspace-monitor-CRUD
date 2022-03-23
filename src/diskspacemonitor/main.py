@@ -200,16 +200,7 @@ def get_latest_useage(component_name: str) -> t.Dict[str, str]:
     all_component_events = in_memory_db["system_events"][component_name]
     latest_event = all_component_events[len(all_component_events) - 1]
 
-    latest_event_response = api_utils.return_custom_event_dict(
-        latest_event.event_id,
-        latest_event.timestamp,
-        latest_event.component_name,
-        latest_event.total_available_storage,
-        latest_event.storage_limit,
-        latest_event.current_storage_useage,
-    )
-
-    return latest_event_response
+    return latest_event.return_custom_event_dict()
 
 
 @app.get("/v1/component_events/{component_name}/history")
@@ -233,15 +224,7 @@ def get_useage_history(
     """
     all_component_events = in_memory_db["system_events"][component_name]
     event_history_response = [
-        api_utils.return_custom_event_dict(
-            event.event_id,
-            event.timestamp,
-            event.component_name,
-            event.total_available_storage,
-            event.storage_limit,
-            event.current_storage_useage,
-        )
-        for event in all_component_events
+        event.return_custom_event_dict() for event in all_component_events
     ]
 
     filtered = event_history_response[skip : skip + limit]
@@ -271,15 +254,7 @@ def get_all_latest_useages(
         latest_events.append(all_component_events[len(all_component_events) - 1])
 
     latest_events_for_each_component_response = [
-        api_utils.return_custom_event_dict(
-            event.event_id,
-            event.timestamp,
-            event.component_name,
-            event.total_available_storage,
-            event.storage_limit,
-            event.current_storage_useage,
-        )
-        for event in latest_events
+        event.return_custom_event_dict() for event in latest_events
     ]
 
     filtered = latest_events_for_each_component_response[skip : skip + limit]
