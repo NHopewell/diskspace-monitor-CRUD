@@ -1,6 +1,11 @@
 # diskspace-monitor-CRUD
 
-[![Diskspace Monitor Test Suite](https://github.com/NHopewell/diskspace-monitor-CRUD/actions/workflows/tests.yml/badge.svg)](https://github.com/NHopewell/diskspace-monitor-CRUD/actions/workflows/tests.yml)
+<p align="center" width="100%">
+    <img width="33%" src="fast.png">
+
+    [![Diskspace Monitor Test Suite](https://github.com/NHopewell/diskspace-monitor-CRUD/actions/workflows/tests.yml/badge.svg)](https://github.com/NHopewell/diskspace-monitor-CRUD/actions/workflows/tests.yml)
+
+</p>
 
 ## Background
 
