@@ -9,6 +9,7 @@ import typing as t
 from collections import defaultdict
 
 from fastapi import FastAPI
+from fastapi import HTTPException
 
 import diskspacemonitor.utils as api_utils
 import diskspacemonitor.warn as monitor_warnings
@@ -39,21 +40,23 @@ in_memory_db = {
 ###################################################################
 
 
-@app.post("/v1/system_components")
+@app.post("/v1/system_components", response_model=models.SystemComponent)
 def create_system_component(component: models.SystemComponent) -> None:
     """Create a new system component in our monitored system."""
 
     if component.name in in_memory_db["system_components"]:
-        response = {
-            "Error": f"{component.name} already exists in the monitored system."
-        }
-        return response
+        error_msg = f"{component.name} already exists in the monitored system."
+        raise HTTPException(status_code=409, detail=error_msg)
 
     api_utils.register_system_component(component, in_memory_db)
     api_utils.register_system_event(component, in_memory_db)
 
+    return component
 
-@app.get("/v1/system_components/{component_name}")
+
+@app.get(
+    "/v1/system_components/{component_name}", response_model=models.SystemComponent
+)
 def read_system_component(component_name: str) -> t.Dict[str, str]:
     """Retrieve data regarding a single system component of our monitored system.
 
@@ -63,15 +66,17 @@ def read_system_component(component_name: str) -> t.Dict[str, str]:
         the unique name of a system component.
     """
     if component_name not in in_memory_db["system_components"]:
-        response = {
-            "Error": f"{component_name} does not exist in the monitored system."
-        }
-        return response
+        error_msg = f"{component_name} does not exist in the monitored system."
+        raise HTTPException(status_code=404, detail=error_msg)
 
-    return api_utils.get_system_component(component_name, in_memory_db)
+    component = api_utils.get_system_component(component_name, in_memory_db)
+
+    return component
 
 
-@app.patch("/v1/system_components/{component_name}")
+@app.patch(
+    "/v1/system_components/{component_name}", response_model=models.SystemComponent
+)
 def update_system_component(
     component_name: str, updated_component: models.UpdateSystemComponent
 ) -> None:
@@ -84,10 +89,8 @@ def update_system_component(
 
     """
     if component_name not in in_memory_db["system_components"]:
-        response = {
-            "Error": f"{component_name} does not exist in the monitored system."
-        }
-        return response
+        error_msg = f"{component_name} does not exist in the monitored system."
+        raise HTTPException(status_code=404, detail=error_msg)
 
     system_component = in_memory_db["system_components"][component_name]
 
@@ -100,10 +103,9 @@ def update_system_component(
         try:
             system_component.set_storage_limit(new_storage_limit)
         except monitor_warnings.StorageLimitOutOfRangeError:
-            response = {
-                "Error": f"{new_storage_limit} is not a valid storage limit. Must be between 0 - 100"
-            }
-            return response
+
+            error_msg = f"{new_storage_limit} is not a valid storage limit. Must be between 0 - 100"
+            raise HTTPException(status_code=400, detail=error_msg)
 
     # update component storage useage if in request
     warning_flag, warning_type = False, None
@@ -131,6 +133,8 @@ def update_system_component(
         # register new system event only
         api_utils.register_system_event(system_component, in_memory_db)
 
+    return system_component
+
 
 @app.delete("/v1/system_components/{component_name}")
 def delete_system_component(component_name: str) -> None:
@@ -142,10 +146,8 @@ def delete_system_component(component_name: str) -> None:
         the unique name of a system component.
     """
     if component_name not in in_memory_db["system_components"]:
-        response = {
-            "Error": f"{component_name} does not exist in the monitored system."
-        }
-        return response
+        error_msg = f"{component_name} does not exist in the monitored system."
+        raise HTTPException(status_code=404, detail=error_msg)
 
     # not deleting the component from events or warnings to have backlog
     del in_memory_db["system_components"][component_name]
@@ -195,7 +197,7 @@ def get_latest_useage(component_name: str) -> t.Dict[str, str]:
     all_component_events = in_memory_db["system_events"][component_name]
     latest_event = all_component_events[len(all_component_events) - 1]
 
-    latest_event_response = api_utils.return_event_dict(
+    latest_event_response = api_utils.return_custom_event_dict(
         latest_event.event_id,
         latest_event.timestamp,
         latest_event.component_name,
@@ -228,7 +230,7 @@ def get_useage_history(
     """
     all_component_events = in_memory_db["system_events"][component_name]
     event_history_response = [
-        api_utils.return_event_dict(
+        api_utils.return_custom_event_dict(
             event.event_id,
             event.timestamp,
             event.component_name,
@@ -266,7 +268,7 @@ def get_all_latest_useages(
         latest_events.append(all_component_events[len(all_component_events) - 1])
 
     latest_events_for_each_component_response = [
-        api_utils.return_event_dict(
+        api_utils.return_custom_event_dict(
             event.event_id,
             event.timestamp,
             event.component_name,
