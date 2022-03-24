@@ -138,4 +138,4 @@ tox
 
 This will run the test suite in 6 different virtural environments using ubuntu and Windows, each with Python versions 3.8, 3.9. and 3.10.
 
-On git pushes to master or pull requests, tox will be run in these 6 environments concurrently on 6 different machines.
+On git pushes to master or pull requests, tox will be run in these 6 environments concurrently on separate machines.
